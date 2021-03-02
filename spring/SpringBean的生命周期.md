@@ -24,4 +24,15 @@ Bean容器使用Java Reflection API创建Bean的实例。
 
 如果配置文件中的Bean定义包含`destroy-method`属性，那么将调用Bean类中的相应方法定义。
 
+![img](assets/16931812-9e3b6dd5b5661b94.png)
+
+![img](assets/16931812-f8562c9ebcb9ac20.png)
+
+![img](assets/16931812-2b8d5c1bea6f9c62.png)
+
+所以可以看出MergedBeanDefinitionPostProcessors
+
+ 这个beanPostProcess可以在实例化之后 populate之前被调用
+
+很多操作比如Autowire就是实现了这个接口 ，在这弄得
 
