@@ -26,7 +26,7 @@ Spring解决循环依赖的核心思想在于提前曝光
 
 2。通过构建函数创建b对象  b对象也是半成品， 还没注入属性和init方法
 
-4.b对象注入a对象，从半成品缓存中拿半成品对象a
+4.b对象注入a对象，从半成品缓存中拿半成品对象a （这里实际上是先访问三级缓存，拿到之后移入二级 因为a被放入三级缓存后，只要有一个bean尝试获取他的单例，那就会把他从三级移动到二级）
 
 5.b完成后放入完成品缓存
 
@@ -120,3 +120,34 @@ public Object getEarlyBeanReference(Object bean, String beanName) throws BeansEx
 }
 ```
 
+
+
+
+
+
+
+onrefresh方法里的finishBeanFactory Inilization  就是执行bean后置处理器 把非懒加载的bean初始化
+
+
+
+
+
+doGet 不到就要解决 doCreate create的过程中 这时候要先把自己放入singleLectonFactory中 （三级缓存）   再要populatie 注入属性 ，然后解决依赖 ， 继续向下获取依赖对象 
+
+依赖对象也是一样 get doget  create docreate populate 然后把自己放入三级缓存
+
+然后获取a的单例  一样查询 一级  查不到 查二级     然后查三级 
+
+返回a的代理对象 这时候把 a放到二级缓存中，移除三级缓存
+
+这时候b就完成了populate过程，解决了依赖，执行回调    beanpostprocess的before  开始初始化   afterPropertyset 等（如果有） init_method 等   beanpostprocess的after  等  
+
+
+
+然后把 注入好对象的b 放入singleton中 移出二级缓存（虽然从来没放进去过）  三级缓存
+
+最后 a也完成了 依赖处理 完成了populate 
+
+开始初始化-> 各种回调  beanpostprocess的before afterPropertyset 等 init_method    beanpostprocess的after
+
+然后把自己移出二级缓存 放入一级缓存。
