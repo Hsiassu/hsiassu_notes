@@ -1,0 +1,1 @@
+curl https://int.newland.com.cn/pts/portalLogin/loginPw -X POST -d "password=111111&loginid=zhuyex"
