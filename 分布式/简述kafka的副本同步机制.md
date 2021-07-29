@@ -1,0 +1,3 @@
+# 简述kafka的副本同步机制
+
+partition中是怎么存储的 offset偏移量确定一条消息
